@@ -13,7 +13,7 @@ import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useState } from 'react';
 import { categories } from '../utils/categories';
-import { addEntry } from '../utils/mutations';
+import { addEntry, updateEntry, deleteEntry } from '../utils/mutations';
 
 // Modal component for individual entries.
 
@@ -31,6 +31,7 @@ export default function EntryModal({ entry, type, user }) {
    // TODO: For editing, you may have to add and manage another state variable to check if the entry is being edited.
 
    const [open, setOpen] = useState(false);
+   const [editing, setEdit] = useState(false);
    const [name, setName] = useState(entry.name);
    const [link, setLink] = useState(entry.link);
    const [description, setDescription] = useState(entry.description);
@@ -40,6 +41,12 @@ export default function EntryModal({ entry, type, user }) {
 
    const handleClickOpen = () => {
       setOpen(true);
+      // If we're adding, set Edit to true automatically
+      if (type == "add") setEdit(true);
+      else {
+         setEdit(false);
+         console.log("got here !!");
+      }
       setName(entry.name);
       setLink(entry.link);
       setDescription(entry.description);
@@ -48,6 +55,7 @@ export default function EntryModal({ entry, type, user }) {
 
    const handleClose = () => {
       setOpen(false);
+      setEdit(false);
    };
 
    // Mutation handlers
@@ -67,8 +75,40 @@ export default function EntryModal({ entry, type, user }) {
    };
 
    // TODO: Add Edit Mutation Handler
+   const handleEdit = () => {
+      setEdit(true); 
+      // Should convert the Edit button into a 
+      // Confirm button and make the text fields editable
+   };
+
+   const handleConfirm = () => {
+      const newEntry = {
+         name: name,
+         link: link,
+         description: description,
+         user: user?.displayName ? user?.displayName : "GenericUser",
+         category: category,
+         userid: user?.uid,
+      };
+
+      updateEntry(newEntry).catch(console.error);
+      handleClose();
+   };
 
    // TODO: Add Delete Mutation Handler
+   const handleDelete = () => {
+      const newEntry = {
+         name: name,
+         link: link,
+         description: description,
+         user: user?.displayName ? user?.displayName : "GenericUser",
+         category: category,
+         userid: user?.uid,
+      };
+
+      deleteEntry(newEntry).catch(console.error);
+      handleClose();
+   };
 
    // Button handlers for modal opening and inside-modal actions.
    // These buttons are displayed conditionally based on if adding or editing/opening.
@@ -87,11 +127,14 @@ export default function EntryModal({ entry, type, user }) {
       type === "edit" ?
          <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleEdit}>Edit</Button>
+            <Button variant="contained" onClick={handleDelete}>Delete</Button>
          </DialogActions>
          : type === "add" ?
             <DialogActions>
                <Button onClick={handleClose}>Cancel</Button>
                <Button variant="contained" onClick={handleAdd}>Add Entry</Button>
+               
             </DialogActions>
             : null;
 
@@ -110,6 +153,7 @@ export default function EntryModal({ entry, type, user }) {
                   variant="standard"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
+                  disabled={!editing}
                />
                <TextField
                   margin="normal"
@@ -120,6 +164,7 @@ export default function EntryModal({ entry, type, user }) {
                   variant="standard"
                   value={link}
                   onChange={(event) => setLink(event.target.value)}
+                  disabled={!editing}
                />
                <TextField
                   margin="normal"
@@ -131,6 +176,7 @@ export default function EntryModal({ entry, type, user }) {
                   maxRows={8}
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
+                  disabled={!editing}
                />
 
                <FormControl fullWidth sx={{ "margin-top": 20 }}>
