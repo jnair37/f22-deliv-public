@@ -132,6 +132,7 @@ export default function EntryModal({ entry, type, user }) {
          user: user?.displayName ? user?.displayName : "GenericUser",
          category: category,
          userid: user?.uid,
+         id: entry.id
       };
 
       deleteEntry(newEntry).catch(console.error);
