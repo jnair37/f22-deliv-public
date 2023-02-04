@@ -10,6 +10,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import { documentId } from 'firebase/firestore';
 import * as React from 'react';
 import { useState } from 'react';
 import { categories } from '../utils/categories';
@@ -30,12 +31,14 @@ export default function EntryModal({ entry, type, user }) {
 
    // TODO: For editing, you may have to add and manage another state variable to check if the entry is being edited.
 
+
    const [open, setOpen] = useState(false);
    const [editing, setEdit] = useState(false);
    const [name, setName] = useState(entry.name);
    const [link, setLink] = useState(entry.link);
    const [description, setDescription] = useState(entry.description);
    const [category, setCategory] = React.useState(entry.category);
+   
 
    // Modal visibility handlers
 
@@ -46,6 +49,7 @@ export default function EntryModal({ entry, type, user }) {
       else {
          setEdit(false);
          console.log("got here !!");
+         console.log(user);
       }
       setName(entry.name);
       setLink(entry.link);
@@ -68,20 +72,34 @@ export default function EntryModal({ entry, type, user }) {
          user: user?.displayName ? user?.displayName : "GenericUser",
          category: category,
          userid: user?.uid,
+         id: entry.id
       };
 
+
+      console.log("Adding user id");
+      console.log(user?.displayName);
+      console.log(user?.uid);
       addEntry(newEntry).catch(console.error);
       handleClose();
    };
 
    // TODO: Add Edit Mutation Handler
    const handleEdit = () => {
+      console.log("Editing user: ");
+      console.log(user);
+      console.log(user.displayName);
+      console.log(user.uid);
       setEdit(true); 
       // Should convert the Edit button into a 
       // Confirm button and make the text fields editable
    };
 
    const handleConfirm = () => {
+
+      console.log(user);
+      console.log(user.displayName);
+      console.log(user.uid);
+
       const newEntry = {
          name: name,
          link: link,
@@ -89,7 +107,17 @@ export default function EntryModal({ entry, type, user }) {
          user: user?.displayName ? user?.displayName : "GenericUser",
          category: category,
          userid: user?.uid,
+         id: entry.id
       };
+
+      console.log(user);
+
+      console.log(user.displayName);
+      console.log(user.uid);
+      console.log(" ");
+      console.log(name);
+      console.log(entry.id);
+      
 
       updateEntry(newEntry).catch(console.error);
       handleClose();
@@ -125,11 +153,18 @@ export default function EntryModal({ entry, type, user }) {
 
    const actionButtons =
       type === "edit" ?
-         <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button variant="contained" onClick={handleEdit}>Edit</Button>
-            <Button variant="contained" onClick={handleDelete}>Delete</Button>
-         </DialogActions>
+         editing ?
+            <DialogActions>
+               <Button onClick={handleClose}>Cancel</Button>
+               <Button variant="contained" onClick={handleConfirm}>Confirm</Button>
+               <Button variant="contained" onClick={handleDelete}>Delete</Button>
+            </DialogActions>
+            : 
+            <DialogActions>
+               <Button onClick={handleClose}>Cancel</Button>
+               <Button variant="contained" onClick={handleEdit}>Edit</Button>
+               <Button variant="contained" onClick={handleDelete}>Delete</Button>
+            </DialogActions>
          : type === "add" ?
             <DialogActions>
                <Button onClick={handleClose}>Cancel</Button>

@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import EntryModal from './EntryModal';
 import { getCategory } from '../utils/categories';
 
+import firebase from 'firebase/compat/app';
+
 // Table component that displays entries on home screen
 
 export default function EntryTable({ entries }) {
@@ -37,7 +39,7 @@ export default function EntryTable({ entries }) {
                      <TableCell align="right">{entry.user}</TableCell>
                      <TableCell align="right">{getCategory(entry.category).name}</TableCell>
                      <TableCell sx={{ "padding-top": 0, "padding-bottom": 0 }} align="right">
-                        <EntryModal entry={entry} type="edit" />
+                        <EntryModal entry={entry} type="edit" user={firebase.auth().currentUser}/>
                      </TableCell>
                   </TableRow>
                ))}
