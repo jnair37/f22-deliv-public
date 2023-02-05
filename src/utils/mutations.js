@@ -29,9 +29,14 @@ export async function addEntry(entry) {
 }
 
 export async function updateEntry(entry) {
-   // TODO: Create Mutation to Edit Entry
-   console.log(entry.name);
-   console.log(entry.id);
+
+   // Mutation to Edit Entry
+
+   // console.log(entry.name);
+   // console.log(entry.id);
+
+   // setDoc() updates the firestore doc corresponding to the entry ID
+   // with the following fields
    await setDoc(doc(db, "entries", entry.id), {
       name: entry.name,
       link: entry.link,
@@ -46,7 +51,7 @@ export async function updateEntry(entry) {
 }
 
 export async function deleteEntry(entry) {
-   // TODO: Create Mutation to Delete Entry
+   // Mutation to Delete Entry
    await deleteDoc(doc(db, "entries", entry.id));
 }
 

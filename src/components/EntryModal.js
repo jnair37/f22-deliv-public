@@ -32,11 +32,11 @@ export default function EntryModal({ entry, type, user }) {
    // State variables for modal status
    //const[sorted, setSorted] = useState(false);
 
-   // TODO: For editing, you may have to add and manage another state variable to check if the entry is being edited.
-
+   // State variable to check if currently in edit mode
+   const [editing, setEdit] = useState(false);
 
    const [open, setOpen] = useState(false);
-   const [editing, setEdit] = useState(false);
+   
    const [name, setName] = useState(entry.name);
    const [link, setLink] = useState(entry.link);
    const [description, setDescription] = useState(entry.description);
@@ -49,20 +49,19 @@ export default function EntryModal({ entry, type, user }) {
       setOpen(true);
       // If we're adding, set Edit to true automatically
       if (type == "add") setEdit(true);
-      else {
-         setEdit(false);
-         console.log("got here !!");
-         console.log(user);
-      }
+      else setEdit(false);
+      // console.log("got here !!");
+      // console.log(user);
+      
       setName(entry.name);
       setLink(entry.link);
       setDescription(entry.description);
       setCategory(entry.category);
 
-      // Log clicks to database
-      console.log("before");
-      console.log(clicks);
-      
+      // The following logs the new click directly to database
+
+      // console.log("before");
+      // console.log(clicks);
 
       const newEntry = {
          name: name,
@@ -77,11 +76,12 @@ export default function EntryModal({ entry, type, user }) {
       updateEntry(newEntry).catch(console.error);
 
       setClicks(clicks + 1);
-      console.log("after");
-      console.log(clicks);
+      // console.log("after");
+      // console.log(clicks);
    };
 
    const handleClose = () => {
+      // No longer open or editing
       setOpen(false);
       setEdit(false);
    };
@@ -101,29 +101,30 @@ export default function EntryModal({ entry, type, user }) {
       };
 
 
-      console.log("Adding user id");
-      console.log(user?.displayName);
-      console.log(user?.uid);
+      // console.log("Adding user id");
+      // console.log(user?.displayName);
+      // console.log(user?.uid);
       addEntry(newEntry).catch(console.error);
       handleClose();
    };
 
-   // TODO: Add Edit Mutation Handler
+   // Edit Mutation Handler -- just sets mode to editing
    const handleEdit = () => {
-      console.log("Editing user: ");
-      console.log(user);
-      console.log(user.displayName);
-      console.log(user.uid);
+      // console.log("Editing user: ");
+      // console.log(user);
+      // console.log(user.displayName);
+      // console.log(user.uid);
       setEdit(true); 
-      // Should convert the Edit button into a 
-      // Confirm button and make the text fields editable
+
    };
 
+   // Confirm Mutation Handler -- when the user confirms edits,
+   // logs to the database
    const handleConfirm = () => {
 
-      console.log(user);
-      console.log(user.displayName);
-      console.log(user.uid);
+      // console.log(user);
+      // console.log(user.displayName);
+      // console.log(user.uid);
 
       const newEntry = {
          name: name,
@@ -136,20 +137,20 @@ export default function EntryModal({ entry, type, user }) {
          clicks: entry.clicks
       };
 
-      console.log(user);
+      // console.log(user);
 
-      console.log(user.displayName);
-      console.log(user.uid);
-      console.log(" ");
-      console.log(name);
-      console.log(entry.id);
+      // console.log(user.displayName);
+      // console.log(user.uid);
+      // console.log(" ");
+      // console.log(name);
+      // console.log(entry.id);
       
-
+      // Calls corresponding function in mutations.js
       updateEntry(newEntry).catch(console.error);
       handleClose();
    };
 
-   // TODO: Add Delete Mutation Handler
+   // Delete Mutation Handler
    const handleDelete = () => {
       const newEntry = {
          name: name,
@@ -162,6 +163,7 @@ export default function EntryModal({ entry, type, user }) {
          clicks: entry.clicks
       };
 
+      // Calls corresponding function in mutations.js
       deleteEntry(newEntry).catch(console.error);
       handleClose();
    };
@@ -177,7 +179,6 @@ export default function EntryModal({ entry, type, user }) {
 
    // Button handlers for modal opening and inside-modal actions.
    // These buttons are displayed conditionally based on if adding or editing/opening.
-   // TODO: You may have to edit these buttons to implement editing/deleting functionality.
 
    const openButton =
       type === "edit" ? <IconButton onClick={handleClickOpen}>
@@ -194,6 +195,8 @@ export default function EntryModal({ entry, type, user }) {
 //    Sort by name
 // </Button> : null;
 
+   // Displays buttons based on whether in add mode, opened an existing entry, or actively editing an existing entry
+   // In the case of an existing entry, if actively editing, shows Confirm button, otherwise shows Edit button
    const actionButtons =
       type === "edit" ?
          editing ?
@@ -222,7 +225,7 @@ export default function EntryModal({ entry, type, user }) {
          <Dialog open={open} onClose={handleClose}>
             <DialogTitle>{type === "edit" ? name : "Add Entry"}</DialogTitle>
             <DialogContent>
-               {/* TODO: Feel free to change the properties of these components to implement editing functionality. The InputProps props class for these MUI components allows you to change their traditional CSS properties. */}
+               {/* Disables text fields if not in edit mode. */}
                <TextField
                   margin="normal"
                   id="name"
@@ -265,6 +268,7 @@ export default function EntryModal({ entry, type, user }) {
                      value={category}
                      label="Category"
                      onChange={(event) => setCategory(event.target.value)}
+                     disabled={!editing}
                   >
                      {categories.map((category) => (<MenuItem value={category.id}>{category.name}</MenuItem>))}
                   </Select>

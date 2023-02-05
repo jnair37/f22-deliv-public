@@ -58,7 +58,9 @@ export default function EntryTable({ entries/*, sorted*/ }) {
    // } 
    // else
    // {
-      console.log("Didn't get here!");
+      //console.log("Didn't get here!");
+
+   // Added column for clicks (new table cells in both header and body)
       return (
          <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -69,7 +71,7 @@ export default function EntryTable({ entries/*, sorted*/ }) {
                      <TableCell align="right">User</TableCell>
                      <TableCell align="right">Category</TableCell>
                      <TableCell align="right">Open</TableCell>
-                     <TableCell align="right">Clicks </TableCell>
+                     <TableCell align="right">Views </TableCell>
                   </TableRow>
                </TableHead>
                <TableBody>
