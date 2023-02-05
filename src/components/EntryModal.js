@@ -25,9 +25,12 @@ type: Type of entry modal being opened.
    "edit" (for opening or editing an existing entry from table).
 user: User making query (The current logged in user). */
 
+//const sorted = React.createContext(false);
+
 export default function EntryModal({ entry, type, user }) {
 
    // State variables for modal status
+   //const[sorted, setSorted] = useState(false);
 
    // TODO: For editing, you may have to add and manage another state variable to check if the entry is being edited.
 
@@ -38,7 +41,7 @@ export default function EntryModal({ entry, type, user }) {
    const [link, setLink] = useState(entry.link);
    const [description, setDescription] = useState(entry.description);
    const [category, setCategory] = React.useState(entry.category);
-   
+   const [clicks, setClicks] = useState(entry.clicks);
 
    // Modal visibility handlers
 
@@ -55,6 +58,27 @@ export default function EntryModal({ entry, type, user }) {
       setLink(entry.link);
       setDescription(entry.description);
       setCategory(entry.category);
+
+      // Log clicks to database
+      console.log("before");
+      console.log(clicks);
+      
+
+      const newEntry = {
+         name: name,
+         link: link,
+         description: description,
+         user: user?.displayName ? user?.displayName : "GenericUser",
+         category: category,
+         userid: user?.uid,
+         id: entry.id,
+         clicks: clicks + 1
+      };
+      updateEntry(newEntry).catch(console.error);
+
+      setClicks(clicks + 1);
+      console.log("after");
+      console.log(clicks);
    };
 
    const handleClose = () => {
@@ -72,7 +96,8 @@ export default function EntryModal({ entry, type, user }) {
          user: user?.displayName ? user?.displayName : "GenericUser",
          category: category,
          userid: user?.uid,
-         id: entry.id
+         id: entry.id,
+         clicks: 0
       };
 
 
@@ -107,7 +132,8 @@ export default function EntryModal({ entry, type, user }) {
          user: user?.displayName ? user?.displayName : "GenericUser",
          category: category,
          userid: user?.uid,
-         id: entry.id
+         id: entry.id,
+         clicks: entry.clicks
       };
 
       console.log(user);
@@ -132,12 +158,22 @@ export default function EntryModal({ entry, type, user }) {
          user: user?.displayName ? user?.displayName : "GenericUser",
          category: category,
          userid: user?.uid,
-         id: entry.id
+         id: entry.id,
+         clicks: entry.clicks
       };
 
       deleteEntry(newEntry).catch(console.error);
       handleClose();
    };
+
+   // Sorting functionality
+
+   // const handleSort = () => {
+   //    window.sorted = true;
+      
+   //    console.log(window.sorted);
+
+   // }
 
    // Button handlers for modal opening and inside-modal actions.
    // These buttons are displayed conditionally based on if adding or editing/opening.
@@ -151,6 +187,12 @@ export default function EntryModal({ entry, type, user }) {
             Add entry
          </Button>
             : null;
+   
+//    const sortButton = 
+//    type === "add" ?
+//    <Button variant="contained" onClick={handleSort}>
+//    Sort by name
+// </Button> : null;
 
    const actionButtons =
       type === "edit" ?
@@ -176,7 +218,7 @@ export default function EntryModal({ entry, type, user }) {
 
    return (
       <div>
-         {openButton}
+         {openButton} 
          <Dialog open={open} onClose={handleClose}>
             <DialogTitle>{type === "edit" ? name : "Add Entry"}</DialogTitle>
             <DialogContent>

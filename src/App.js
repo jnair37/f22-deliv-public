@@ -125,6 +125,7 @@ export default function App() {
   // Main content of homescreen. This is displayed conditionally from user auth status
 
   function mainContent() {
+    //console.log(window.sorted);
     if (isSignedIn) {
       return (
         <Grid container spacing={3}>
@@ -134,7 +135,7 @@ export default function App() {
             </Stack>
           </Grid>
           <Grid item xs={12}>
-            <EntryTable entries={entries} />
+            <EntryTable entries={entries} /*sorted={window.sorted}*//>
           </Grid>
         </Grid>
       )
@@ -210,6 +211,7 @@ export default function App() {
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
+            
           </Toolbar>
           <Divider />
           <List component="nav">

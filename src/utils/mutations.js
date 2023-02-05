@@ -1,4 +1,4 @@
-import { addDoc, collection, setDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { addDoc, collection, setDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, orderBy } from "firebase/firestore";
 import { db } from './firebase';
 
 //const functions = require('firebase-functions');
@@ -11,6 +11,7 @@ export const emptyEntry = {
    description: "",
    user: "",
    category: 0,
+   clicks: 0
 }
 
 export async function addEntry(entry) {
@@ -23,6 +24,7 @@ export async function addEntry(entry) {
       // The ID of the current user is logged with the new entry for database user-access functionality.
       // You should not remove this userid property, otherwise your logged entries will not display.
       userid: entry.userid,
+      clicks: 0
    });
 }
 
@@ -38,7 +40,8 @@ export async function updateEntry(entry) {
       category: entry.category,
       // The ID of the current user is logged with the new entry for database user-access functionality.
       // You should not remove this userid property, otherwise your logged entries will not display.
-      userid: entry.userid
+      userid: entry.userid, 
+      clicks: entry.clicks
    });
 }
 
@@ -46,3 +49,14 @@ export async function deleteEntry(entry) {
    // TODO: Create Mutation to Delete Entry
    await deleteDoc(doc(db, "entries", entry.id));
 }
+
+// export async function sortEntry(entry)
+// {
+//    const q = entry.userid ? query(collection(db, "entries"), where("userid", "==", entry.userid), orderBy("name")) : collection(db, "entries");
+
+//    onSnapshot(q, (snapshot) => {
+//          // Set Entries state variable to the current snapshot
+//          // For each entry, appends the document ID as an object property along with the existing document data
+//       setEntries(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+//    });
+// }
