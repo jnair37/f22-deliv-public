@@ -13,52 +13,52 @@ import firebase from 'firebase/compat/app';
 
 // Table component that displays entries on home screen
 
-export default function EntryTable({ entries/*, sorted*/ }) {
+export default function EntryTable({ entries, sorted }) {
 
    // console.log("table");
    // console.log(sorted);
 
-   // if (sorted) 
-   // {
-   //    console.log("Got ehre!");
-   //    return (
-   //       <TableContainer component={Paper}>
-   //          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-   //             <TableHead>
-   //                <TableRow>
-   //                   <TableCell>Name</TableCell>
-   //                   <TableCell align="right">Link</TableCell>
-   //                   <TableCell align="right">User</TableCell>
-   //                   <TableCell align="right">Category</TableCell>
-   //                   <TableCell align="right">Open</TableCell>
-   //                </TableRow>
-   //             </TableHead>
-   //             <TableBody>
-   //                Got here !!
-   //                {entries.map((entry) => (
-   //                   <TableRow
-   //                      key={entry.id}
-   //                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-   //                   >
-   //                      <TableCell component="th" scope="row">
-   //                         {entry.name}
-   //                      </Ta-bleCell>
-   //                      <TableCell align="right"><Link href={entry.link}>{entry.link}</Link></TableCell>
-   //                      <TableCell align="right">{entry.user}</TableCell>
-   //                      <TableCell align="right">{getCategory(entry.category).name}</TableCell>
-   //                      <TableCell sx={{ "padding-top": 0, "padding-bottom": 0 }} align="right">
-   //                         <EntryModal entry={entry} type="edit" user={firebase.auth().currentUser}/>
-   //                      </TableCell>
-   //                   </TableRow>
-   //                )).sort((a, b) => a.name.localeCompare(b.name))}
-   //             </TableBody>
-   //          </Table>
-   //       </TableContainer>
-   //    );
-   // } 
-   // else
-   // {
-      //console.log("Didn't get here!");
+   // Boolean variable toggles name/views sorting
+   if (sorted) 
+   {
+      return (
+         <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+               <TableHead>
+                  <TableRow>
+                     <TableCell>Name</TableCell>
+                     <TableCell align="right">Link</TableCell>
+                     <TableCell align="right">User</TableCell>
+                     <TableCell align="right">Category</TableCell>
+                     <TableCell align="right">Open</TableCell>
+                     <TableCell align="right">Views </TableCell>
+                  </TableRow>
+               </TableHead>
+               <TableBody>
+                  {entries.sort((a, b) => a.name.localeCompare(b.name)).map((entry) => (
+                     <TableRow
+                        key={entry.id}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                     >
+                        <TableCell component="th" scope="row">
+                           {entry.name}
+                        </TableCell>
+                        <TableCell align="right"><Link href={entry.link}>{entry.link}</Link></TableCell>
+                        <TableCell align="right">{entry.user}</TableCell>
+                        <TableCell align="right">{getCategory(entry.category).name}</TableCell>
+                        <TableCell sx={{ "padding-top": 0, "padding-bottom": 0 }} align="right">
+                           <EntryModal entry={entry} type="edit" user={firebase.auth().currentUser}/>
+                        </TableCell>
+                        <TableCell align="right">{entry.clicks}</TableCell>
+                     </TableRow>
+                  ))}
+               </TableBody>
+            </Table>
+         </TableContainer>
+      );
+   } 
+   else
+   {
 
    // Added column for clicks (new table cells in both header and body)
       return (
@@ -75,7 +75,7 @@ export default function EntryTable({ entries/*, sorted*/ }) {
                   </TableRow>
                </TableHead>
                <TableBody>
-                  {entries.map((entry) => (
+                  {entries.sort((a, b) => b.clicks - a.clicks).map((entry) => (
                      <TableRow
                         key={entry.id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -98,4 +98,4 @@ export default function EntryTable({ entries/*, sorted*/ }) {
       );
    }
    
-//}
+}

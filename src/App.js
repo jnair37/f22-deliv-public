@@ -125,7 +125,7 @@ export default function App() {
   // Main content of homescreen. This is displayed conditionally from user auth status
 
   function mainContent() {
-    //console.log(window.sorted);
+    //pass in window.sorted as argument to EntryTable
     if (isSignedIn) {
       return (
         <Grid container spacing={3}>
@@ -135,7 +135,7 @@ export default function App() {
             </Stack>
           </Grid>
           <Grid item xs={12}>
-            <EntryTable entries={entries} /*sorted={window.sorted}*//>
+            <EntryTable entries={entries} sorted={window.sorted}/>
           </Grid>
         </Grid>
       )
@@ -234,6 +234,7 @@ export default function App() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {mainContent()}
           </Container>
+          <p>Note:Once you click on the button to sort the links a different way, you will have to open one of the links before the list can re-sort itself. </p>
         </Box>
       </Box>
     </ThemeProvider>

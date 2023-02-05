@@ -170,12 +170,37 @@ export default function EntryModal({ entry, type, user }) {
 
    // Sorting functionality
 
-   // const handleSort = () => {
-   //    window.sorted = true;
+   const handleSort = () => {
+      window.sorted = !window.sorted;
       
-   //    console.log(window.sorted);
+      console.log(window.sorted);
 
-   // }
+      // Trying to see what functionality from handleClickOpen() is causing
+      // the table to refresh automatically. None of the below worked
+
+      // setOpen(true);
+      // setOpen(false);
+      // setEdit(true);
+      // setEdit(false);
+
+      // setName(entry.name);
+      // setLink(entry.link);
+      // setDescription(entry.description);
+      // setCategory(entry.category);
+
+      // const newEntry = {
+      //    name: name,
+      //    link: link,
+      //    description: description,
+      //    user: user?.displayName ? user?.displayName : "GenericUser",
+      //    category: category,
+      //    userid: user?.uid,
+      //    id: entry.id,
+      //    clicks: clicks
+      // };
+      // updateEntry(newEntry).catch(console.error);
+
+   }
 
    // Button handlers for modal opening and inside-modal actions.
    // These buttons are displayed conditionally based on if adding or editing/opening.
@@ -189,11 +214,17 @@ export default function EntryModal({ entry, type, user }) {
          </Button>
             : null;
    
-//    const sortButton = 
-//    type === "add" ?
-//    <Button variant="contained" onClick={handleSort}>
-//    Sort by name
-// </Button> : null;
+   // Button that toggles sorting between name/views based on the window.sorted variable
+   const sortButton = 
+   type === "add" ?
+         window.sorted == true ?
+         <Button variant="contained" onClick={handleSort}>
+            Sort by views
+         </Button> : 
+         <Button variant="contained" onClick={handleSort}>
+            Sort by name
+         </Button>
+   : null;
 
    // Displays buttons based on whether in add mode, opened an existing entry, or actively editing an existing entry
    // In the case of an existing entry, if actively editing, shows Confirm button, otherwise shows Edit button
@@ -222,6 +253,7 @@ export default function EntryModal({ entry, type, user }) {
    return (
       <div>
          {openButton} 
+         {sortButton}
          <Dialog open={open} onClose={handleClose}>
             <DialogTitle>{type === "edit" ? name : "Add Entry"}</DialogTitle>
             <DialogContent>
